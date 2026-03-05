@@ -15,8 +15,13 @@ thead{flex-shrink:0;display:block;width:100%}
 tbody{flex:1;overflow-y:auto;display:block;width:100%}
 .dp-body{flex:none;overflow-y:visible;border-bottom:2px solid #d0d0d0}
 tr{display:table;width:100%;table-layout:fixed}
-th,td{padding:4px 6px;border-bottom:1px solid #f0f0f0;text-align:center;font-size:12px}
+th,td{padding:4px 6px;border-bottom:1px solid #f0f0f0;text-align:center;font-size:12px;font-family:Consolas,Monaco,monospace;transition:background 0.15s}
 th{background:#fff;font-weight:600;border-bottom:2px solid #e8e8e8}
+td{text-align:right}td:nth-child(2){text-align:left}
+tr:hover td{background:#f5f5f5}
+td:hover{background:#e8e8e8!important}
+.collapsible{display:none}
+.show-collapsed .collapsible{display:table-cell}
 th.c1{background:#e6f4ff}th.c2{background:#e6fffb}th.c3{background:#f0f5ff}th.c4{background:#fff0f6}th.c5{background:#fffbe6}
 td.wk{color:#1677ff}td.mo{color:#722ed1}
 .dap{background:#fafafa!important;font-weight:600}
@@ -30,6 +35,7 @@ td.wk{color:#1677ff}td.mo{color:#722ed1}
 <div class="toolbar"><span>日期</span><select id="dd"></select>
 <span class="stat">品牌总数<b id="bc">0</b></span>
 <span class="stat">大盘<b id="ts">0</b></span>
+<button id="toggleBtn" style="padding:4px 12px;border:1px solid #d9d9d9;border-radius:4px;background:#fff;cursor:pointer;font-size:12px">显示增长路径 ▼</button>
 <input id="sb" placeholder="搜索品牌..." oninput="render()"></div>
 <div class="tbl-wrap"><table><thead id="th"></thead><tbody id="dp" class="dp-body"></tbody><tbody id="tb"></tbody></table></div></div>
 <script>
@@ -45,7 +51,7 @@ const dp=document.getElementById('dp');
 const bc=document.getElementById('bc'),ts=document.getElementById('ts'),sb=document.getElementById('sb');
 function dname(n){return n==='RONGHENGJIAOYU/荣恒教育'?'荣恒教育':n;}
 function pct(num,den){return den?((num/den)*100).toFixed(1)+'%':'0.0%';}
-function pctInt(num,den){return den?Math.round((num/den)*100)+'%':'0%';}
+function pctInt(num,den){return den?((num/den)*100).toFixed(1)+'%':'0.0%';}
 dates.forEach(d=>{let o=document.createElement('option');o.value=o.text=d;dd.add(o)});
 dd.onchange=render;
 let wlen=WH.length,mlen=MH.length;
@@ -54,12 +60,12 @@ hr+='<th colspan="3" class="c1">品牌销量（单位：单）</th>';
 hr+='<th colspan="3" class="c2">品牌市占率</th>';
 hr+='<th colspan="'+wlen+'" class="c3">周累计（单位：万单）</th>';
 hr+='<th colspan="'+mlen+'" class="c4">月累计（单位：万单）</th>';
-hr+='<th colspan="3" class="c5">增长路径</th></tr><tr>';
+hr+='<th colspan="3" class="c5 collapsible">增长路径</th></tr><tr>';
 hr+='<th></th><th></th><th class="c1">昨日</th><th class="c1">近7天日均</th><th class="c1">近30天日均</th>';
 hr+='<th class="c2">昨日</th><th class="c2">近7日</th><th class="c2">近30日</th>';
 WH.forEach(w=>{hr+='<th class="wk c3">'+w.l+'<br>'+w.s+'</th>'});
 MH.forEach(m=>{hr+='<th class="mo c4">'+m.l+'<br>'+m.s+'</th>'});
-hr+='<th class="c5">直播占比</th><th class="c5">视频占比</th><th class="c5">商品卡占比</th></tr>';
+hr+='<th class="c5 collapsible">直播占比</th><th class="c5 collapsible">视频占比</th><th class="c5 collapsible">商品卡占比</th></tr>';
 th.innerHTML=hr;
 function render(){
  let date=dd.value,kw=sb.value.toLowerCase();
@@ -79,7 +85,7 @@ function render(){
   dh+='<td>'+pctInt(dpSales,dpSales)+'</td><td>'+pctInt(dp7,dp7)+'</td><td>'+pctInt(dp30,dp30)+'</td>';
   for(let j=2;j<2+wlen;j++)dh+='<td class="wk">'+Math.round(dpSm[j]/10000)+'</td>';
   for(let j=7;j<7+mlen;j++)dh+='<td class="mo">'+Math.round(dpSm[j]/10000)+'</td>';
-  dh+='<td>'+pct(dpRow[3],dpRow[2])+'</td><td>'+pct(dpRow[4],dpRow[2])+'</td><td>'+pct(dpRow[5],dpRow[2])+'</td>';
+  dh+='<td class="collapsible">'+pct(dpRow[3],dpRow[2])+'</td><td class="collapsible">'+pct(dpRow[4],dpRow[2])+'</td><td class="collapsible">'+pct(dpRow[5],dpRow[2])+'</td>';
   dh+='</tr>';
  }
  dp.innerHTML=dh;
@@ -94,10 +100,16 @@ function render(){
   h+='<td>'+pct(r[2],dpSales)+'</td><td>'+pct(sm[0],dp7)+'</td><td>'+pct(sm[1],dp30)+'</td>';
   for(let j=2;j<2+wlen;j++)h+='<td class="wk">'+wan(sm[j])+'</td>';
   for(let j=7;j<7+mlen;j++)h+='<td class="mo">'+wan(sm[j])+'</td>';
-  h+='<td>'+pct(r[3],r[2])+'</td><td>'+pct(r[4],r[2])+'</td><td>'+pct(r[5],r[2])+'</td>';
+  h+='<td class="collapsible">'+pct(r[3],r[2])+'</td><td class="collapsible">'+pct(r[4],r[2])+'</td><td class="collapsible">'+pct(r[5],r[2])+'</td>';
   h+='</tr>';
  });
  tb.innerHTML=h;
 }
 render();
+const toggleBtn=document.getElementById('toggleBtn');
+const table=document.querySelector('table');
+toggleBtn.onclick=()=>{
+ const isShown=table.classList.toggle('show-collapsed');
+ toggleBtn.textContent=isShown?'隐藏增长路径 ▲':'显示增长路径 ▼';
+};
 </script></body></html>
