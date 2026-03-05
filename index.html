@@ -2,24 +2,26 @@
 <html><head><meta charset="utf-8"><title>品牌销量看板</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-body{font:12px/1.5 -apple-system,sans-serif;background:#f0f2f5;color:#333}
-.wrap{max-width:1800px;margin:0 auto;padding:10px 16px}
-h1{text-align:center;font-size:20px;padding:12px 0;color:#1a1a2e}
-.toolbar{display:flex;align-items:center;gap:12px;padding:8px 12px;background:#fff;border-radius:8px;margin-bottom:10px;flex-wrap:wrap}
+body{font:12px/1.5 -apple-system,sans-serif;background:#f0f2f5;color:#333;overflow:hidden;height:100vh;display:flex;flex-direction:column}
+.wrap{max-width:1800px;margin:0 auto;padding:10px 16px;display:flex;flex-direction:column;height:100vh}
+h1{text-align:center;font-size:20px;padding:12px 0;color:#1a1a2e;flex-shrink:0}
+.toolbar{display:flex;align-items:center;gap:12px;padding:8px 12px;background:#fff;border-radius:8px;margin-bottom:10px;flex-wrap:wrap;flex-shrink:0}
 .toolbar select,.toolbar input{padding:4px 8px;border:1px solid #d9d9d9;border-radius:4px;font-size:12px}
 .toolbar input{width:160px}
 .stat{font-size:12px;color:#666}.stat b{color:#1a1a2e;font-size:13px;margin-left:4px}
-.tbl-wrap{background:#fff;border-radius:8px;overflow-x:auto}
-table{width:100%;border-collapse:collapse;white-space:nowrap}
+.tbl-wrap{background:#fff;border-radius:8px;overflow:hidden;flex:1;display:flex;flex-direction:column}
+table{width:100%;border-collapse:collapse;white-space:nowrap;display:flex;flex-direction:column;height:100%}
+thead{flex-shrink:0;display:block;width:100%}
+tbody{flex:1;overflow-y:auto;display:block;width:100%}
+tr{display:table;width:100%;table-layout:fixed}
 th,td{padding:4px 6px;border-bottom:1px solid #f0f0f0;text-align:center;font-size:12px}
-th{position:sticky;top:0;background:#fff;font-weight:600;border-bottom:2px solid #e8e8e8;z-index:1}
+th{background:#fff;font-weight:600;border-bottom:2px solid #e8e8e8}
 th.wk{background:#e8f4fd}th.mo{background:#f3e8fd}
 td.wk{color:#1677ff}td.mo{color:#722ed1}
 .bar-cell{display:flex;align-items:center;gap:4px;justify-content:flex-end}
 .bar{height:14px;border-radius:7px;background:linear-gradient(90deg,#69b1ff,#1677ff);min-width:2px}
 .badge{display:inline-block;width:20px;height:20px;line-height:20px;border-radius:10px;color:#fff;font-size:11px;font-weight:700}
 .b1{background:#f5222d}.b2{background:#fa8c16}.b3{background:#faad14}
-.toggle-row td{padding:8px!important;text-align:center;cursor:pointer;color:#1677ff;font-size:13px}.toggle-row:hover td{background:#f0f7ff}
 </style></head>
 <body><div class="wrap"><h1>品牌销量看板</h1>
 <div class="toolbar"><span>日期</span><select id="dd"></select>
@@ -50,26 +52,19 @@ function render(){
  let mx=list[0]?list[0][2]:1;
  bc.textContent=fmt(list.length);
  ts.textContent=fmt(list.reduce((a,r)=>a+r[2],0));
- list=list.slice(0,100);
  let h='';
- let expanded=window._expanded||false;
  list.forEach((r,i)=>{
   let rk=i+1,badge=rk<=3?'<span class="badge b'+rk+'">'+rk+'</span>':rk;
   let pct=w=>r[2]?((w/r[2])*100).toFixed(1)+'%':'0.0%';
   let bw=Math.max(2,Math.round(r[2]/mx*80));
   let sm=S[r[1]]||Array(12).fill(0);
-  let hide=(!expanded&&i>=20)?' style="display:none" class="more-row"':'';
-  h+='<tr'+hide+'><td>'+badge+'</td><td style="text-align:left">'+r[1]+'</td>';
+  h+='<tr><td>'+badge+'</td><td style="text-align:left">'+r[1]+'</td>';
   h+='<td><div class="bar-cell"><div class="bar" style="width:'+bw+'px"></div>'+fmt(r[2])+'</div></td>';
   h+='<td>'+fmt(sm[0])+'</td><td>'+fmt(sm[1])+'</td>';
   h+='<td>'+pct(r[3])+'</td><td>'+pct(r[4])+'</td><td>'+pct(r[5])+'</td>';
   for(let j=2;j<7;j++)h+='<td class="wk">'+wan(sm[j])+'</td>';
   for(let j=7;j<12;j++)h+='<td class="mo">'+wan(sm[j])+'</td>';
   h+='</tr>'});
- if(list.length>20){let cols=th.querySelectorAll('th').length;
-  let txt=expanded?'▲ 收起':'▼ 展开剩余 '+(list.length-20)+' 个品牌';
-  h+='<tr class="toggle-row" onclick="toggleMore()"><td colspan="'+cols+'">'+txt+'</td></tr>'}
  tb.innerHTML=h}
-function toggleMore(){window._expanded=!window._expanded;render()}
 render();
 </script></body></html>
