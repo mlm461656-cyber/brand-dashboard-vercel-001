@@ -103,7 +103,7 @@ function buildHeader(weeks,months){
  hr+='<th colspan="3" class="c2">品牌市占率</th>';
  hr+='<th colspan="5" class="c3">周累计（单位：万单）</th>';
  hr+='<th colspan="5" class="c4">月累计（单位：万单）</th></tr><tr>';
- hr+='<th colspan="2"></th><th class="c1">昨日</th><th class="c1">近7天日均</th><th class="c1">近30天日均</th>';
+ hr+='<th></th><th></th><th class="c1">昨日</th><th class="c1">近7天日均</th><th class="c1">近30天日均</th>';
  hr+='<th class="c2">昨日</th><th class="c2">近7日</th><th class="c2">近30日</th>';
  weeks.forEach(w=>{hr+='<th class="wk c3">'+w.label+'<br>'+w.range+'</th>'});
  months.forEach(m=>{hr+='<th class="mo c4">'+m.label+'<br>'+m.range+'</th>'});
