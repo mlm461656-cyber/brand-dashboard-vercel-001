@@ -82,9 +82,6 @@ function calcMonths(dateStr){
   }
   let key=m.getFullYear()+'-'+(m.getMonth()+1).toString().padStart(2,'0');
   months.push({label,range,key});
-  if(dateStr==='2026-03-01'&&i>=3){
-   console.log('Month i='+i+', label='+label+', key='+key+', year='+m.getFullYear()+', month='+(m.getMonth()+1));
-  }
  }
  return months;
 }
@@ -109,18 +106,13 @@ function calcMonthSales(brand,monthKey,endDate){
  let year=parseInt(parts[0]),month=parseInt(parts[1]);
  let startDate=year+'-'+month.toString().padStart(2,'0')+'-01';
  let total=0;
- let count=0;
  D.forEach(r=>{
   let rBrand=dname(r[1]);
   let targetBrand=dname(brand);
   if(rBrand===targetBrand&&r[0]>=startDate&&r[0]<=endDate){
    total+=r[2]||0;
-   count++;
   }
  });
- if(brand==='大盘'&&(monthKey==='2025-12'||monthKey==='2025-11')){
-  console.log('calcMonthSales: brand='+brand+', monthKey='+monthKey+', startDate='+startDate+', endDate='+endDate+', total='+total+', count='+count);
- }
  return total;
 }
 
@@ -160,7 +152,7 @@ function render(){
   dh+='<td>'+pctInt(dpSales,dpSales)+'</td><td>'+pctInt(dp7,dp7)+'</td><td>'+pctInt(dp30,dp30)+'</td>';
   weeks.forEach((w,i)=>{
    let val=calcWeekSales('大盘',w.startKey,w.endKey);
-   dh+='<td class="wk">'+Math.round(val/10000)+'</td>';
+   dh+='<td class="wk">'+(val/10000).toFixed(1)+'</td>';
   });
   months.forEach((m,i)=>{
    let endDate;
@@ -173,7 +165,7 @@ function render(){
     endDate=y+'-'+mo.toString().padStart(2,'0')+'-'+lastDay.toString().padStart(2,'0');
    }
    let val=calcMonthSales('大盘',m.key,endDate);
-   dh+='<td class="mo">'+Math.round(val/10000)+'</td>';
+   dh+='<td class="mo">'+(val/10000).toFixed(1)+'</td>';
   });
   dh+='<td>'+pct(dpRow[3],dpRow[2])+'</td><td>'+pct(dpRow[4],dpRow[2])+'</td><td>'+pct(dpRow[5],dpRow[2])+'</td>';
   dh+='</tr>';
