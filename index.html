@@ -45,6 +45,7 @@ const dp=document.getElementById('dp');
 const bc=document.getElementById('bc'),ts=document.getElementById('ts'),sb=document.getElementById('sb');
 function dname(n){return n==='RONGHENGJIAOYU/荣恒教育'?'荣恒教育':n;}
 function pct(num,den){return den?((num/den)*100).toFixed(1)+'%':'0.0%';}
+function pctInt(num,den){return den?Math.round((num/den)*100)+'%':'0%';}
 dates.forEach(d=>{let o=document.createElement('option');o.value=o.text=d;dd.add(o)});
 dd.onchange=render;
 let wlen=WH.length,mlen=MH.length;
@@ -55,7 +56,7 @@ hr+='<th colspan="'+wlen+'" class="c3">周累计（单位：万单）</th>';
 hr+='<th colspan="'+mlen+'" class="c4">月累计（单位：万单）</th>';
 hr+='<th colspan="3" class="c5">增长路径</th></tr><tr>';
 hr+='<th></th><th></th><th class="c1">昨日</th><th class="c1">近7天日均</th><th class="c1">近30天日均</th>';
-hr+='<th class="c2">昨日%</th><th class="c2">近7日%</th><th class="c2">近30日%</th>';
+hr+='<th class="c2">昨日</th><th class="c2">近7日</th><th class="c2">近30日</th>';
 WH.forEach(w=>{hr+='<th class="wk c3">'+w.l+'<br>'+w.s+'</th>'});
 MH.forEach(m=>{hr+='<th class="mo c4">'+m.l+'<br>'+m.s+'</th>'});
 hr+='<th class="c5">直播占比</th><th class="c5">视频占比</th><th class="c5">商品卡占比</th></tr>';
@@ -75,7 +76,7 @@ function render(){
  if(dpRow){
   dh+='<tr class="dap"><td>-</td><td style="text-align:left">大盘</td>';
   dh+='<td>'+fmt(dpSales)+'</td><td>'+fmt(Math.round(dp7))+'</td><td>'+fmt(Math.round(dp30))+'</td>';
-  dh+='<td>100.0%</td><td>100.0%</td><td>100.0%</td>';
+  dh+='<td>'+pctInt(dpSales,dpSales)+'</td><td>'+pctInt(dp7,dp7)+'</td><td>'+pctInt(dp30,dp30)+'</td>';
   for(let j=2;j<2+wlen;j++)dh+='<td class="wk">'+Math.round(dpSm[j]/10000)+'</td>';
   for(let j=7;j<7+mlen;j++)dh+='<td class="mo">'+Math.round(dpSm[j]/10000)+'</td>';
   dh+='<td>'+pct(dpRow[3],dpRow[2])+'</td><td>'+pct(dpRow[4],dpRow[2])+'</td><td>'+pct(dpRow[5],dpRow[2])+'</td>';
