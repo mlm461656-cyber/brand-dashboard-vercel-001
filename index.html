@@ -102,13 +102,12 @@ function buildHeader(weeks,months){
  hr+='<th colspan="3" class="c1">品牌销量（单位：单）</th>';
  hr+='<th colspan="3" class="c2">品牌市占率</th>';
  hr+='<th colspan="5" class="c3">周累计（单位：万单）</th>';
- hr+='<th colspan="5" class="c4">月累计（单位：万单）</th>';
- hr+='<th colspan="3" class="c5">增长路径</th></tr><tr>';
+ hr+='<th colspan="5" class="c4">月累计（单位：万单）</th></tr><tr>';
  hr+='<th class="c1">昨日</th><th class="c1">近7天日均</th><th class="c1">近30天日均</th>';
  hr+='<th class="c2">昨日</th><th class="c2">近7日</th><th class="c2">近30日</th>';
  weeks.forEach(w=>{hr+='<th class="wk c3">'+w.label+'<br>'+w.range+'</th>'});
  months.forEach(m=>{hr+='<th class="mo c4">'+m.label+'<br>'+m.range+'</th>'});
- hr+='<th class="c5">直播占比</th><th class="c5">视频占比</th><th class="c5">商品卡占比</th></tr>';
+ hr+='</tr>';
  return hr;
 }
 
@@ -178,7 +177,6 @@ function render(){
    let val=calcMonthSales('大盘',m.key,endDate);
    dh+='<td class="mo">'+(val/10000).toFixed(1)+'</td>';
   });
-  dh+='<td>'+pct(dpRow[3],dpRow[2])+'</td><td>'+pct(dpRow[4],dpRow[2])+'</td><td>'+pct(dpRow[5],dpRow[2])+'</td>';
   dh+='</tr>';
  }
  dp.innerHTML=dh;
@@ -210,7 +208,6 @@ function render(){
    let val=calcMonthSales(r[1],m.key,endDate);
    h+='<td class="mo">'+wan(val)+'</td>';
   });
-  h+='<td>'+pct(r[3],r[2])+'</td><td>'+pct(r[4],r[2])+'</td><td>'+pct(r[5],r[2])+'</td>';
   h+='</tr>';
  });
  tb.innerHTML=h;
