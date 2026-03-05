@@ -15,12 +15,12 @@ thead{flex-shrink:0;display:block;width:100%}
 tbody{flex:1;overflow-y:auto;display:block;width:100%}
 .dp-body{flex:none;overflow-y:visible;border-bottom:2px solid #d0d0d0}
 tr{display:table;width:100%;table-layout:fixed}
-th,td{padding:4px 6px;border-bottom:1px solid #f0f0f0;text-align:center;font-size:12px;border-right:1px solid #f0f0f0}
+th,td{padding:4px 6px;border-bottom:1px solid #f0f0f0;text-align:center;font-size:12px}
 th{background:#fff;font-weight:600;border-bottom:2px solid #e8e8e8}
-th[colspan]{border-right:2px solid #d9d9d9}
 th.wk{background:#e8f4fd}th.mo{background:#f3e8fd}
 td.wk{color:#1677ff}td.mo{color:#722ed1}
-th.c1,td.c1{background:#e6f4ff}th.c2,td.c2{background:#e6fffb}th.c3,td.c3{background:#f0f5ff}th.c4,td.c4{background:#fff0f6}th.c5,td.c5{background:#fffbe6}
+th.c1,td.c1{background:#e6f4ff;border-left:3px solid #91caff}th.c2,td.c2{background:#e6fffb;border-left:3px solid #87e8de}th.c3,td.c3{background:#f0f5ff;border-left:3px solid #adc6ff}th.c4,td.c4{background:#fff0f6;border-left:3px solid #ffadd2}th.c5,td.c5{background:#fffbe6;border-left:3px solid #ffe58f}
+th.c1:first-of-type,td.c1:first-of-type,th.c2:first-of-type,td.c2:first-of-type,th.c3:first-of-type,td.c3:first-of-type,th.c4:first-of-type,td.c4:first-of-type,th.c5:first-of-type,td.c5:first-of-type{border-left-width:4px}
 .bar-cell{display:flex;align-items:center;gap:4px;justify-content:flex-end}
 .bar{height:14px;border-radius:7px;background:linear-gradient(90deg,#69b1ff,#1677ff);min-width:2px}
 .badge{display:inline-block;width:20px;height:20px;line-height:20px;border-radius:10px;color:#fff;font-size:11px;font-weight:700}
@@ -76,11 +76,11 @@ function render(){
  let dh='';
  if(dpRow){
   dh+='<tr class="dap"><td>-</td><td style="text-align:left">大盘</td>';
-  dh+='<td>'+fmt(dpSales)+'</td><td>'+fmt(Math.round(dp7))+'</td><td>'+fmt(Math.round(dp30))+'</td>';
-  dh+='<td>'+pctInt(dpSales,dpSales)+'</td><td>'+pctInt(dp7,dp7)+'</td><td>'+pctInt(dp30,dp30)+'</td>';
-  for(let j=2;j<2+wlen;j++)dh+='<td class="wk">'+Math.round(dpSm[j]/10000)+'</td>';
-  for(let j=7;j<7+mlen;j++)dh+='<td class="mo">'+Math.round(dpSm[j]/10000)+'</td>';
-  dh+='<td>'+pct(dpRow[3],dpRow[2])+'</td><td>'+pct(dpRow[4],dpRow[2])+'</td><td>'+pct(dpRow[5],dpRow[2])+'</td>';
+  dh+='<td class="c1">'+fmt(dpSales)+'</td><td class="c1">'+fmt(Math.round(dp7))+'</td><td class="c1">'+fmt(Math.round(dp30))+'</td>';
+  dh+='<td class="c2">'+pctInt(dpSales,dpSales)+'</td><td class="c2">'+pctInt(dp7,dp7)+'</td><td class="c2">'+pctInt(dp30,dp30)+'</td>';
+  for(let j=2;j<2+wlen;j++)dh+='<td class="wk c3">'+Math.round(dpSm[j]/10000)+'</td>';
+  for(let j=7;j<7+mlen;j++)dh+='<td class="mo c4">'+Math.round(dpSm[j]/10000)+'</td>';
+  dh+='<td class="c5">'+pct(dpRow[3],dpRow[2])+'</td><td class="c5">'+pct(dpRow[4],dpRow[2])+'</td><td class="c5">'+pct(dpRow[5],dpRow[2])+'</td>';
   dh+='</tr>';
  }
  dp.innerHTML=dh;
@@ -90,12 +90,12 @@ function render(){
   let bw=Math.max(2,Math.round(r[2]/mx*80));
   let sm=S[r[1]]||S[dname(r[1])]||Array(12).fill(0);
   h+='<tr><td>'+badge+'</td><td style="text-align:left">'+dname(r[1])+'</td>';
-  h+='<td><div class="bar-cell"><div class="bar" style="width:'+bw+'px"></div>'+fmt(r[2])+'</div></td>';
-  h+='<td>'+fmt(sm[0])+'</td><td>'+fmt(sm[1])+'</td>';
-  h+='<td>'+pct(r[2],dpSales)+'</td><td>'+pct(sm[0],dp7)+'</td><td>'+pct(sm[1],dp30)+'</td>';
-  for(let j=2;j<2+wlen;j++)h+='<td class="wk">'+wan(sm[j])+'</td>';
-  for(let j=7;j<7+mlen;j++)h+='<td class="mo">'+wan(sm[j])+'</td>';
-  h+='<td>'+pct(r[3],r[2])+'</td><td>'+pct(r[4],r[2])+'</td><td>'+pct(r[5],r[2])+'</td>';
+  h+='<td class="c1"><div class="bar-cell"><div class="bar" style="width:'+bw+'px"></div>'+fmt(r[2])+'</div></td>';
+  h+='<td class="c1">'+fmt(sm[0])+'</td><td class="c1">'+fmt(sm[1])+'</td>';
+  h+='<td class="c2">'+pct(r[2],dpSales)+'</td><td class="c2">'+pct(sm[0],dp7)+'</td><td class="c2">'+pct(sm[1],dp30)+'</td>';
+  for(let j=2;j<2+wlen;j++)h+='<td class="wk c3">'+wan(sm[j])+'</td>';
+  for(let j=7;j<7+mlen;j++)h+='<td class="mo c4">'+wan(sm[j])+'</td>';
+  h+='<td class="c5">'+pct(r[3],r[2])+'</td><td class="c5">'+pct(r[4],r[2])+'</td><td class="c5">'+pct(r[5],r[2])+'</td>';
   h+='</tr>';
  });
  tb.innerHTML=h;
