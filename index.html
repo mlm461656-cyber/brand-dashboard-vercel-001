@@ -52,16 +52,16 @@ dd.onchange=render;
 function calcWeeks(dateStr){
  let d=new Date(dateStr);
  let isSunday=d.getDay()===0;
- let tWeekEnd=isSunday?d:new Date(d.getTime()-d.getDay()*86400000);
- let tWeekStart=new Date(tWeekEnd.getTime()-6*86400000);
+ let tWeekEnd=isSunday?d:new Date(d.getTime()-(d.getDay())*86400000-86400000);
  let weeks=[];
  for(let i=0;i<5;i++){
-  let end=new Date(tWeekStart.getTime()-(i*7)*86400000-1);
+  let end=new Date(tWeekEnd.getTime()-(i*7)*86400000);
   let start=new Date(end.getTime()-6*86400000);
   let label=i===0?'T周':'T-'+i+'周';
   let range=(start.getMonth()+1)+'.'+(start.getDate())+'-'+(end.getMonth()+1)+'.'+(end.getDate());
-  let key=start.getFullYear()+'-'+(start.getMonth()+1).toString().padStart(2,'0')+'-'+start.getDate().toString().padStart(2,'0');
-  weeks.push({label,range,key});
+  let startKey=start.getFullYear()+'-'+(start.getMonth()+1).toString().padStart(2,'0')+'-'+start.getDate().toString().padStart(2,'0');
+  let endKey=end.getFullYear()+'-'+(end.getMonth()+1).toString().padStart(2,'0')+'-'+end.getDate().toString().padStart(2,'0');
+  weeks.push({label,range,startKey,endKey});
  }
  return weeks;
 }
@@ -101,6 +101,29 @@ function buildHeader(weeks,months){
  return hr;
 }
 
+function calcMonthSales(brand,monthKey,endDate){
+ let parts=monthKey.split('-');
+ let year=parseInt(parts[0]),month=parseInt(parts[1]);
+ let startDate=year+'-'+month.toString().padStart(2,'0')+'-01';
+ let total=0;
+ D.forEach(r=>{
+  if(r[1]===brand&&r[0]>=startDate&&r[0]<=endDate){
+   total+=r[2]||0;
+  }
+ });
+ return total;
+}
+
+function calcWeekSales(brand,startDate,endDate){
+ let total=0;
+ D.forEach(r=>{
+  if(r[1]===brand&&r[0]>=startDate&&r[0]<=endDate){
+   total+=r[2]||0;
+  }
+ });
+ return total;
+}
+
 function render(){
  let date=dd.value,kw=sb.value.toLowerCase();
  let weeks=calcWeeks(date);
@@ -124,11 +147,12 @@ function render(){
   dh+='<td>'+fmt(dpSales)+'</td><td>'+fmt(Math.round(dp7))+'</td><td>'+fmt(Math.round(dp30))+'</td>';
   dh+='<td>'+pctInt(dpSales,dpSales)+'</td><td>'+pctInt(dp7,dp7)+'</td><td>'+pctInt(dp30,dp30)+'</td>';
   weeks.forEach((w,i)=>{
-   let val=dpSm[2+i]||0;
+   let val=calcWeekSales('大盘',w.startKey,w.endKey);
    dh+='<td class="wk">'+Math.round(val/10000)+'</td>';
   });
   months.forEach((m,i)=>{
-   let val=dpSm[7+i]||0;
+   let endDate=i===0?date:m.key+'-'+new Date(parseInt(m.key.split('-')[0]),parseInt(m.key.split('-')[1]),0).getDate().toString().padStart(2,'0');
+   let val=calcMonthSales('大盘',m.key,endDate);
    dh+='<td class="mo">'+Math.round(val/10000)+'</td>';
   });
   dh+='<td>'+pct(dpRow[3],dpRow[2])+'</td><td>'+pct(dpRow[4],dpRow[2])+'</td><td>'+pct(dpRow[5],dpRow[2])+'</td>';
@@ -146,11 +170,12 @@ function render(){
   h+='<td>'+fmt(sm[0])+'</td><td>'+fmt(sm[1])+'</td>';
   h+='<td>'+pct(r[2],dpSales)+'</td><td>'+pct(sm[0],dp7)+'</td><td>'+pct(sm[1],dp30)+'</td>';
   weeks.forEach((w,i)=>{
-   let val=sm[2+i]||0;
+   let val=calcWeekSales(r[1],w.startKey,w.endKey);
    h+='<td class="wk">'+wan(val)+'</td>';
   });
   months.forEach((m,i)=>{
-   let val=sm[7+i]||0;
+   let endDate=i===0?date:m.key+'-'+new Date(parseInt(m.key.split('-')[0]),parseInt(m.key.split('-')[1]),0).getDate().toString().padStart(2,'0');
+   let val=calcMonthSales(r[1],m.key,endDate);
    h+='<td class="mo">'+wan(val)+'</td>';
   });
   h+='<td>'+pct(r[3],r[2])+'</td><td>'+pct(r[4],r[2])+'</td><td>'+pct(r[5],r[2])+'</td>';
