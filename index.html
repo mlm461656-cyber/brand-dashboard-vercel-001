@@ -175,12 +175,13 @@ function render(){
  let h='';
  list.forEach((r,i)=>{
   let rk=i+1,badge=rk<=3?'<span class="badge b'+rk+'">'+rk+'</span>':rk;
-  let bw=Math.max(2,Math.round(r[2]/mx*80));
+  let pctVal=dpSales?(r[2]/dpSales)*100:0;
+  let bw=Math.max(2,Math.round(pctVal*0.8));
   let sm=S[r[1]]||S[dname(r[1])]||Array(12).fill(0);
   h+='<tr><td>'+badge+'</td><td style="text-align:left">'+dname(r[1])+'</td>';
-  h+='<td><div class="bar-cell"><div class="bar" style="width:'+bw+'px"></div>'+fmt(r[2])+'</div></td>';
+  h+='<td>'+fmt(r[2])+'</td>';
   h+='<td>'+fmt(sm[0])+'</td><td>'+fmt(sm[1])+'</td>';
-  h+='<td>'+pct(r[2],dpSales)+'</td><td>'+pct(sm[0],dp7)+'</td><td>'+pct(sm[1],dp30)+'</td>';
+  h+='<td><div class="bar-cell"><div class="bar" style="width:'+bw+'px"></div>'+pct(r[2],dpSales)+'</div></td><td>'+pct(sm[0],dp7)+'</td><td>'+pct(sm[1],dp30)+'</td>';
   weeks.forEach((w,i)=>{
    let val=calcWeekSales(r[1],w.startKey,w.endKey);
    h+='<td class="wk">'+wan(val)+'</td>';
