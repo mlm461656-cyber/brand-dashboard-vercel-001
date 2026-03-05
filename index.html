@@ -74,11 +74,11 @@ function render(){
  let dh='';
  if(dpRow){
   dh+='<tr class="dap"><td>-</td><td style="text-align:left">大盘</td>';
-  dh+='<td class="c1">'+fmt(dpSales)+'</td><td class="c1">'+fmt(dp7)+'</td><td class="c1">'+fmt(dp30)+'</td>';
-  dh+='<td class="c2">100.0%</td><td class="c2">100.0%</td><td class="c2">100.0%</td>';
-  for(let j=2;j<2+wlen;j++)dh+='<td class="wk c3">'+wan(dpSm[j])+'</td>';
-  for(let j=7;j<7+mlen;j++)dh+='<td class="mo c4">'+wan(dpSm[j])+'</td>';
-  dh+='<td class="c5">'+pct(dpRow[3],dpRow[2])+'</td><td class="c5">'+pct(dpRow[4],dpRow[2])+'</td><td class="c5">'+pct(dpRow[5],dpRow[2])+'</td>';
+  dh+='<td>'+fmt(dpSales)+'</td><td>'+fmt(Math.round(dp7))+'</td><td>'+fmt(Math.round(dp30))+'</td>';
+  dh+='<td>100.0%</td><td>100.0%</td><td>100.0%</td>';
+  for(let j=2;j<2+wlen;j++)dh+='<td class="wk">'+Math.round(dpSm[j]/10000)+'</td>';
+  for(let j=7;j<7+mlen;j++)dh+='<td class="mo">'+Math.round(dpSm[j]/10000)+'</td>';
+  dh+='<td>'+pct(dpRow[3],dpRow[2])+'</td><td>'+pct(dpRow[4],dpRow[2])+'</td><td>'+pct(dpRow[5],dpRow[2])+'</td>';
   dh+='</tr>';
  }
  dp.innerHTML=dh;
@@ -88,12 +88,12 @@ function render(){
   let bw=Math.max(2,Math.round(r[2]/mx*80));
   let sm=S[r[1]]||S[dname(r[1])]||Array(12).fill(0);
   h+='<tr><td>'+badge+'</td><td style="text-align:left">'+dname(r[1])+'</td>';
-  h+='<td class="c1"><div class="bar-cell"><div class="bar" style="width:'+bw+'px"></div>'+fmt(r[2])+'</div></td>';
-  h+='<td class="c1">'+fmt(sm[0])+'</td><td class="c1">'+fmt(sm[1])+'</td>';
-  h+='<td class="c2">'+pct(r[2],dpSales)+'</td><td class="c2">'+pct(sm[0],dp7)+'</td><td class="c2">'+pct(sm[1],dp30)+'</td>';
-  for(let j=2;j<2+wlen;j++)h+='<td class="wk c3">'+wan(sm[j])+'</td>';
-  for(let j=7;j<7+mlen;j++)h+='<td class="mo c4">'+wan(sm[j])+'</td>';
-  h+='<td class="c5">'+pct(r[3],r[2])+'</td><td class="c5">'+pct(r[4],r[2])+'</td><td class="c5">'+pct(r[5],r[2])+'</td>';
+  h+='<td><div class="bar-cell"><div class="bar" style="width:'+bw+'px"></div>'+fmt(r[2])+'</div></td>';
+  h+='<td>'+fmt(sm[0])+'</td><td>'+fmt(sm[1])+'</td>';
+  h+='<td>'+pct(r[2],dpSales)+'</td><td>'+pct(sm[0],dp7)+'</td><td>'+pct(sm[1],dp30)+'</td>';
+  for(let j=2;j<2+wlen;j++)h+='<td class="wk">'+wan(sm[j])+'</td>';
+  for(let j=7;j<7+mlen;j++)h+='<td class="mo">'+wan(sm[j])+'</td>';
+  h+='<td>'+pct(r[3],r[2])+'</td><td>'+pct(r[4],r[2])+'</td><td>'+pct(r[5],r[2])+'</td>';
   h+='</tr>';
  });
  tb.innerHTML=h;
