@@ -51,8 +51,13 @@ dd.onchange=render;
 
 function calcWeeks(dateStr){
  let d=new Date(dateStr);
- let isSunday=d.getDay()===0;
- let tWeekEnd=isSunday?d:new Date(d.getTime()-(d.getDay())*86400000-86400000);
+ let dayOfWeek=d.getDay();
+ let tWeekEnd;
+ if(dayOfWeek===0){
+  tWeekEnd=d;
+ }else{
+  tWeekEnd=new Date(d.getTime()-dayOfWeek*86400000);
+ }
  let weeks=[];
  for(let i=0;i<5;i++){
   let end=new Date(tWeekEnd.getTime()-(i*7)*86400000);
