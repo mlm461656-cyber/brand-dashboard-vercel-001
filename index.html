@@ -16,6 +16,8 @@ tbody{flex:1;overflow-y:auto;display:block;width:100%}
 .dp-body{flex:none;overflow-y:visible;border-bottom:2px solid #d0d0d0}
 tr{display:table;width:100%;table-layout:fixed}
 th,td{padding:4px 6px;border-bottom:1px solid #f0f0f0;text-align:center;font-size:12px;transition:background 0.15s}
+th:nth-child(1),td:nth-child(1){width:40px}
+th:nth-child(2),td:nth-child(2){width:140px;text-align:left;white-space:normal;word-break:break-all}
 th{background:#fff;font-weight:600;border-bottom:2px solid #e8e8e8}
 tr:hover td{background:#f5f5f5}
 td:hover{background:#e8e8e8!important}
@@ -43,7 +45,11 @@ const wan=n=>(n/10000).toFixed(1);
 const dd=document.getElementById('dd'),tb=document.getElementById('tb'),th=document.getElementById('th');
 const dp=document.getElementById('dp');
 const bc=document.getElementById('bc'),ts=document.getElementById('ts'),sb=document.getElementById('sb');
-function dname(n){return n==='RONGHENGJIAOYU/荣恒教育'?'荣恒教育':n;}
+function dname(n){
+ if(n==='RONGHENGJIAOYU/荣恒教育')return '荣恒教育';
+ if(n==='shiguangxue/时光学')return '时光学';
+ return n;
+}
 function pct(num,den){return den?((num/den)*100).toFixed(1)+'%':'0.0%';}
 function pctInt(num,den){return den?Math.round((num/den)*100)+'%':'0%';}
 dates.forEach(d=>{let o=document.createElement('option');o.value=o.text=d;dd.add(o)});
