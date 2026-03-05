@@ -151,7 +151,15 @@ function render(){
    dh+='<td class="wk">'+Math.round(val/10000)+'</td>';
   });
   months.forEach((m,i)=>{
-   let endDate=i===0?date:m.key+'-'+new Date(parseInt(m.key.split('-')[0]),parseInt(m.key.split('-')[1]),0).getDate().toString().padStart(2,'0');
+   let endDate;
+   if(i===0){
+    endDate=date;
+   }else{
+    let parts=m.key.split('-');
+    let y=parseInt(parts[0]),mo=parseInt(parts[1]);
+    let lastDay=new Date(y,mo,0).getDate();
+    endDate=y+'-'+mo.toString().padStart(2,'0')+'-'+lastDay.toString().padStart(2,'0');
+   }
    let val=calcMonthSales('大盘',m.key,endDate);
    dh+='<td class="mo">'+Math.round(val/10000)+'</td>';
   });
@@ -174,7 +182,15 @@ function render(){
    h+='<td class="wk">'+wan(val)+'</td>';
   });
   months.forEach((m,i)=>{
-   let endDate=i===0?date:m.key+'-'+new Date(parseInt(m.key.split('-')[0]),parseInt(m.key.split('-')[1]),0).getDate().toString().padStart(2,'0');
+   let endDate;
+   if(i===0){
+    endDate=date;
+   }else{
+    let parts=m.key.split('-');
+    let y=parseInt(parts[0]),mo=parseInt(parts[1]);
+    let lastDay=new Date(y,mo,0).getDate();
+    endDate=y+'-'+mo.toString().padStart(2,'0')+'-'+lastDay.toString().padStart(2,'0');
+   }
    let val=calcMonthSales(r[1],m.key,endDate);
    h+='<td class="mo">'+wan(val)+'</td>';
   });
