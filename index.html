@@ -82,6 +82,9 @@ function calcMonths(dateStr){
   }
   let key=m.getFullYear()+'-'+(m.getMonth()+1).toString().padStart(2,'0');
   months.push({label,range,key});
+  if(dateStr==='2026-03-01'&&i>=3){
+   console.log('Month i='+i+', label='+label+', key='+key+', year='+m.getFullYear()+', month='+(m.getMonth()+1));
+  }
  }
  return months;
 }
@@ -106,13 +109,18 @@ function calcMonthSales(brand,monthKey,endDate){
  let year=parseInt(parts[0]),month=parseInt(parts[1]);
  let startDate=year+'-'+month.toString().padStart(2,'0')+'-01';
  let total=0;
+ let count=0;
  D.forEach(r=>{
   let rBrand=dname(r[1]);
   let targetBrand=dname(brand);
   if(rBrand===targetBrand&&r[0]>=startDate&&r[0]<=endDate){
    total+=r[2]||0;
+   count++;
   }
  });
+ if(brand==='大盘'&&(monthKey==='2025-12'||monthKey==='2025-11')){
+  console.log('calcMonthSales: brand='+brand+', monthKey='+monthKey+', startDate='+startDate+', endDate='+endDate+', total='+total+', count='+count);
+ }
  return total;
 }
 
