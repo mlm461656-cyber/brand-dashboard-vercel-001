@@ -107,7 +107,9 @@ function calcMonthSales(brand,monthKey,endDate){
  let startDate=year+'-'+month.toString().padStart(2,'0')+'-01';
  let total=0;
  D.forEach(r=>{
-  if(r[1]===brand&&r[0]>=startDate&&r[0]<=endDate){
+  let rBrand=dname(r[1]);
+  let targetBrand=dname(brand);
+  if(rBrand===targetBrand&&r[0]>=startDate&&r[0]<=endDate){
    total+=r[2]||0;
   }
  });
@@ -117,7 +119,9 @@ function calcMonthSales(brand,monthKey,endDate){
 function calcWeekSales(brand,startDate,endDate){
  let total=0;
  D.forEach(r=>{
-  if(r[1]===brand&&r[0]>=startDate&&r[0]<=endDate){
+  let rBrand=dname(r[1]);
+  let targetBrand=dname(brand);
+  if(rBrand===targetBrand&&r[0]>=startDate&&r[0]<=endDate){
    total+=r[2]||0;
   }
  });
