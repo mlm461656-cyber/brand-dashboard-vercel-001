@@ -9,8 +9,9 @@ h1{text-align:center;font-size:18px;padding:8px 0;color:#1a1a2e;flex-shrink:0}
 .toolbar select,.toolbar input{padding:4px 8px;border:1px solid #d9d9d9;border-radius:4px;font-size:12px}
 .toolbar input{width:150px}
 .stat{font-size:12px;color:#666}.stat b{color:#1a1a2e;font-size:12px;margin-left:4px}
-.tbl-wrap{background:#f0f2f5;overflow-y:auto;flex:1;padding:0}
-.main-grid-wrap{background:#fff;border-radius:8px;padding:0;margin-top:8px}
+.tbl-wrap{background:#f0f2f5;overflow-y:auto;overflow-x:auto;flex:1;padding:0}
+.top-dashboard{display:flex;gap:16px;margin-bottom:16px;flex-shrink:0;background:#fff;border-radius:2px;box-shadow:0 1px 3px rgba(0,0,0,0.12);padding:20px;border-top:3px solid #0066cc;min-width:1600px}
+.main-grid-wrap{background:#fff;border-radius:8px;padding:0;margin-top:8px;min-width:1600px}
 .grid-table{display:grid;grid-template-columns:40px 140px 70px 70px 70px 110px 70px 70px repeat(5,65px) repeat(5,65px);min-width:1600px;grid-auto-rows:minmax(38px,auto)}
 .grid-header{display:contents}
 .grid-body{display:contents}
@@ -44,7 +45,7 @@ h1{text-align:center;font-size:18px;padding:8px 0;color:#1a1a2e;flex-shrink:0}
 <span class="stat">大盘<b id="ts">0</b></span>
 <input id="sb" placeholder="搜索品牌..." oninput="render()"></div>
 <div class="tbl-wrap">
-<div class="top-dashboard" style="display:flex;gap:16px;margin-bottom:16px;flex-shrink:0;background:#fff;border-radius:2px;box-shadow:0 1px 3px rgba(0,0,0,0.12);padding:20px;border-top:3px solid #0066cc">
+<div class="top-dashboard">
   <div class="dashboard-left" style="flex:0 0 30%;border-right:1px solid #e0e0e0;padding-right:20px">
     <h3 style="font-size:13px;margin-bottom:16px;color:#0066cc;font-weight:700;letter-spacing:0.5px;text-transform:uppercase;border-bottom:2px solid #0066cc;padding-bottom:8px">核心品牌对比</h3>
     <table style="width:100%;border-collapse:collapse;font-size:11px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif">
