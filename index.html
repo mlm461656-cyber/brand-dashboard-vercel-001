@@ -54,6 +54,7 @@ const bc=document.getElementById('bc'),ts=document.getElementById('ts'),sb=docum
 function dname(n){
  if(n==='RONGHENGJIAOYU/荣恒教育')return '荣恒教育';
  if(n==='shiguangxue/时光学')return '时光学';
+ if(n==='作业帮')return '作业帮（剔除书课包）';
  return n;
 }
 function pct(num,den){return den?((num/den)*100).toFixed(1)+'%':'0.0%';}
@@ -129,31 +130,27 @@ function buildHeader(weeks,months){
  return h;
 }
 
-function calcMonthSales(brand,monthKey,endDate){
- let parts=monthKey.split('-');
- let year=parseInt(parts[0]),month=parseInt(parts[1]);
- let startDate=year+'-'+month.toString().padStart(2,'0')+'-01';
+// 预建索引: idx[brand][date] = sales
+const idx={};
+D.forEach(r=>{
+ let b=dname(r[1]);
+ if(!idx[b])idx[b]={};
+ idx[b][r[0]]=(idx[b][r[0]]||0)+(r[2]||0);
+});
+function calcRangeSales(brand,startKey,endKey){
+ let b=dname(brand),m=idx[b];
+ if(!m)return 0;
  let total=0;
- D.forEach(r=>{
-  let rBrand=dname(r[1]);
-  let targetBrand=dname(brand);
-  if(rBrand===targetBrand&&r[0]>=startDate&&r[0]<=endDate){
-   total+=r[2]||0;
-  }
- });
+ for(let k in m){if(k>=startKey&&k<=endKey)total+=m[k];}
  return total;
 }
-
+function calcMonthSales(brand,monthKey,endDate){
+ let parts=monthKey.split('-');
+ let startDate=parts[0]+'-'+parts[1].padStart(2,'0')+'-01';
+ return calcRangeSales(brand,startDate,endDate);
+}
 function calcWeekSales(brand,startDate,endDate){
- let total=0;
- D.forEach(r=>{
-  let rBrand=dname(r[1]);
-  let targetBrand=dname(brand);
-  if(rBrand===targetBrand&&r[0]>=startDate&&r[0]<=endDate){
-   total+=r[2]||0;
-  }
- });
- return total;
+ return calcRangeSales(brand,startDate,endDate);
 }
 
 function render(){
@@ -161,21 +158,26 @@ function render(){
  let weeks=calcWeeks(date);
  let months=calcMonths(date);
 
- let dpRow=D.find(r=>r[0]===date&&r[1]==='大盘');
- let dpSales=dpRow?dpRow[2]:0;
- let dpSm=dpRow?(S['大盘']||Array(12).fill(0)):Array(12).fill(0);
+ let dpSales=(idx['大盘']&&idx['大盘'][date])||0;
+ let dpSm=S['大盘']||Array(12).fill(0);
  let dp7=dpSm[0]||0,dp30=dpSm[1]||0;
  ts.textContent=dpSales?Math.round(dpSales/10000)+'万':'0万';
 
- let list=D.filter(r=>r[0]===date&&r[1]!=='大盘'&&dname(r[1]).toLowerCase().includes(kw));
+ let seen=new Set();
+ let list=D.filter(r=>{
+  if(r[0]!==date||r[1]==='大盘')return false;
+  let dn=dname(r[1]);
+  if(!dn.toLowerCase().includes(kw))return false;
+  if(seen.has(dn))return false;
+  seen.add(dn);return true;
+ });
  list.sort((a,b)=>b[2]-a[2]);
- let mx=list[0]?list[0][2]:1;
  bc.textContent=fmt(list.length);
 
  let h=buildHeader(weeks,months);
  let row=3;
 
- if(dpRow){
+ if(dpSales){
   h+='<div class="grid-cell dap" style="grid-row:'+row+';grid-column:1">-</div>';
   h+='<div class="grid-cell dap col2" style="grid-row:'+row+';grid-column:2">大盘</div>';
   h+='<div class="grid-cell dap" style="grid-row:'+row+';grid-column:3">'+fmt(dpSales)+'</div>';
@@ -211,7 +213,7 @@ function render(){
   let rk=i+1,badge=rk<=3?'<span class="badge b'+rk+'">'+rk+'</span>':rk;
   let pctVal=dpSales?(r[2]/dpSales)*100:0;
   let bw=Math.max(2,Math.round(pctVal*0.8));
-  let sm=S[r[1]]||S[dname(r[1])]||Array(12).fill(0);
+  let sm=S[dname(r[1])]||Array(12).fill(0);
 
   h+='<div class="grid-cell" style="grid-row:'+row+';grid-column:1">'+badge+'</div>';
   h+='<div class="grid-cell col2" style="grid-row:'+row+';grid-column:2">'+dname(r[1])+'</div>';
