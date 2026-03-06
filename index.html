@@ -3,13 +3,13 @@
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 body{font:12px/1.5 -apple-system,sans-serif;background:#f0f2f5;color:#333;overflow:hidden;height:100vh;display:flex;flex-direction:column}
-.wrap{max-width:1640px;margin:0 auto;padding:8px 16px;display:flex;flex-direction:column;height:100vh}
+.wrap{width:100%;max-width:100%;margin:0 auto;padding:8px 16px;display:flex;flex-direction:column;height:100vh}
 h1{text-align:center;font-size:18px;padding:8px 0;color:#1a1a2e;flex-shrink:0}
 .toolbar{display:flex;align-items:center;gap:10px;padding:6px 10px;background:#fff;border-radius:8px;margin-bottom:8px;flex-wrap:wrap;flex-shrink:0}
 .toolbar select,.toolbar input{padding:4px 8px;border:1px solid #d9d9d9;border-radius:4px;font-size:12px}
 .toolbar input{width:150px}
 .stat{font-size:12px;color:#666}.stat b{color:#1a1a2e;font-size:12px;margin-left:4px}
-.tbl-wrap{background:#fff;border-radius:8px;overflow:auto;flex:1;position:relative}
+.tbl-wrap{background:#fff;border-radius:8px;overflow-x:auto;overflow-y:scroll;flex:1;position:relative}
 .grid-table{display:grid;grid-template-columns:40px 120px 70px 70px 70px 110px 70px 70px repeat(5,65px) repeat(5,65px);min-width:1600px;grid-auto-rows:minmax(38px,auto)}
 .grid-header{display:contents}
 .grid-body{display:contents}
