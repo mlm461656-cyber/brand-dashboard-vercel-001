@@ -228,6 +228,12 @@ D.forEach(r=>{
  if(!idx[b])idx[b]={};
  idx[b][r[0]]=(idx[b][r[0]]||0)+(r[2]||0);
 });
+const xueersiTushu=idx['学而思图书']||{};
+const xueersi=idx['学而思']||{};
+const mergedDates=new Set([...Object.keys(xueersiTushu),...Object.keys(xueersi)]);
+const merged={};
+mergedDates.forEach(d=>{merged[d]=(xueersiTushu[d]||0)+(xueersi[d]||0);});
+idx['学而思图书_集团']=merged;
 function calcRangeSales(brand,startKey,endKey){
  let b=dname(brand),m=idx[b];
  if(!m)return 0;
