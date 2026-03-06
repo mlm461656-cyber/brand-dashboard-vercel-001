@@ -10,7 +10,7 @@ h1{text-align:center;font-size:18px;padding:8px 0;color:#1a1a2e;flex-shrink:0}
 .toolbar input{width:150px}
 .stat{font-size:12px;color:#666}.stat b{color:#1a1a2e;font-size:12px;margin-left:4px}
 .tbl-wrap{background:#fff;border-radius:8px;overflow-x:auto;overflow-y:scroll;flex:1;position:relative}
-.grid-table{display:grid;grid-template-columns:40px 120px 70px 70px 70px 110px 70px 70px repeat(5,65px) repeat(5,65px);min-width:1600px;grid-auto-rows:minmax(38px,auto)}
+.grid-table{display:grid;grid-template-columns:40px 140px 70px 70px 70px 110px 70px 70px repeat(5,65px) repeat(5,65px);min-width:1600px;grid-auto-rows:minmax(38px,auto)}
 .grid-header{display:contents}
 .grid-body{display:contents}
 .grid-cell{padding:4px 6px;border-bottom:1px solid #f0f0f0;text-align:center;font-size:12px;display:flex;align-items:center;justify-content:center;transition:background 0.15s;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
@@ -213,7 +213,7 @@ function render(){
   let rk=i+1,badge=rk<=3?'<span class="badge b'+rk+'">'+rk+'</span>':rk;
   let pctVal=dpSales?(r[2]/dpSales)*100:0;
   let bw=Math.max(2,Math.round(pctVal*3.0));
-  let sm=S[dname(r[1])]||Array(12).fill(0);
+  let sm=S[r[1]]||S[dname(r[1])]||Array(12).fill(0);
 
   h+='<div class="grid-cell" style="grid-row:'+row+';grid-column:1">'+badge+'</div>';
   h+='<div class="grid-cell col2" style="grid-row:'+row+';grid-column:2">'+dname(r[1])+'</div>';
