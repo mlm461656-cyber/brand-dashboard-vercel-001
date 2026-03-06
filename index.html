@@ -108,12 +108,12 @@ h1{text-align:center;font-size:18px;padding:8px 0;color:#1a1a2e;flex-shrink:0}
           <td style="padding:10px 6px;text-align:right;color:#333;font-variant-numeric:tabular-nums">1.00</td>
         </tr>
         <tr style="border-bottom:1px solid #e0e0e0;">
-          <td style="padding:10px 6px;text-align:center;color:#333">-</td>
+          <td style="padding:10px 6px;text-align:center;color:#333">17</td>
           <td style="padding:10px 6px;text-align:left;color:#1a1a1a">学而思图书_集团</td>
-          <td style="padding:10px 6px;text-align:right;color:#333;font-variant-numeric:tabular-nums">-</td>
-          <td style="padding:10px 6px;text-align:right;color:#333;font-variant-numeric:tabular-nums">-</td>
-          <td style="padding:10px 6px;text-align:right;color:#333;font-variant-numeric:tabular-nums">-</td>
-          <td style="padding:10px 6px;text-align:right;color:#333;font-variant-numeric:tabular-nums">-</td>
+          <td style="padding:10px 6px;text-align:right;color:#333;font-variant-numeric:tabular-nums">15,943</td>
+          <td style="padding:10px 6px;text-align:right;color:#333;font-variant-numeric:tabular-nums">1.4%</td>
+          <td style="padding:10px 6px;text-align:right;color:#333;font-variant-numeric:tabular-nums">13.5%</td>
+          <td style="padding:10px 6px;text-align:right;color:#333;font-variant-numeric:tabular-nums">0.47</td>
         </tr>
         <tr style="border-bottom:1px solid #e0e0e0;">
           <td style="padding:10px 6px;text-align:center;color:#333">10</td>
@@ -228,12 +228,14 @@ D.forEach(r=>{
  if(!idx[b])idx[b]={};
  idx[b][r[0]]=(idx[b][r[0]]||0)+(r[2]||0);
 });
-const xueersiTushu=idx['学而思图书']||{};
-const xueersi=idx['学而思']||{};
-const mergedDates=new Set([...Object.keys(xueersiTushu),...Object.keys(xueersi)]);
-const merged={};
-mergedDates.forEach(d=>{merged[d]=(xueersiTushu[d]||0)+(xueersi[d]||0);});
-idx['学而思图书_集团']=merged;
+if(!idx['学而思图书_集团']){
+ const xueersiTushu=idx['学而思图书']||{};
+ const xueersi=idx['学而思']||{};
+ const mergedDates=new Set([...Object.keys(xueersiTushu),...Object.keys(xueersi)]);
+ const merged={};
+ mergedDates.forEach(d=>{merged[d]=(xueersiTushu[d]||0)+(xueersi[d]||0);});
+ idx['学而思图书_集团']=merged;
+}
 function calcRangeSales(brand,startKey,endKey){
  let b=dname(brand),m=idx[b];
  if(!m)return 0;
