@@ -10,9 +10,10 @@ h1{text-align:center;font-size:18px;padding:8px 0;color:#1a1a2e;flex-shrink:0}
 .toolbar input{width:150px}
 .stat{font-size:12px;color:#666}.stat b{color:#1a1a2e;font-size:12px;margin-left:4px}
 .tbl-wrap{background:#f0f2f5;overflow-y:auto;overflow-x:auto;flex:1;padding:0}
-.top-dashboard{display:flex;gap:16px;margin-bottom:16px;flex-shrink:0;background:#fff;border-radius:2px;box-shadow:0 1px 3px rgba(0,0,0,0.12);padding:20px;border-top:3px solid #0066cc;min-width:1600px}
-.main-grid-wrap{background:#fff;border-radius:8px;padding:0;margin-top:8px;min-width:1600px}
-.grid-table{display:grid;grid-template-columns:40px 140px 70px 70px 70px 110px 70px 70px repeat(5,65px) repeat(5,65px);min-width:1600px;grid-auto-rows:minmax(38px,auto)}
+.content-container{width:1600px;margin:0 auto}
+.top-dashboard{display:flex;gap:16px;margin-bottom:16px;flex-shrink:0;background:#fff;border-radius:2px;box-shadow:0 1px 3px rgba(0,0,0,0.12);padding:20px;border-top:3px solid #0066cc;width:100%}
+.main-grid-wrap{background:#fff;border-radius:8px;padding:0;margin-top:8px;width:100%}
+.grid-table{display:grid;grid-template-columns:40px 140px 70px 70px 70px 110px 70px 70px repeat(5,65px) repeat(5,65px);width:100%;grid-auto-rows:minmax(38px,auto)}
 .grid-header{display:contents}
 .grid-body{display:contents}
 .grid-cell{padding:4px 6px;border-bottom:1px solid #f0f0f0;text-align:center;font-size:12px;display:flex;align-items:center;justify-content:center;transition:background 0.15s;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
@@ -45,6 +46,7 @@ h1{text-align:center;font-size:18px;padding:8px 0;color:#1a1a2e;flex-shrink:0}
 <span class="stat">大盘<b id="ts">0</b></span>
 <input id="sb" placeholder="搜索品牌..." oninput="render()"></div>
 <div class="tbl-wrap">
+<div class="content-container">
 <div class="top-dashboard">
   <div class="dashboard-left" style="flex:0 0 30%;border-right:1px solid #e0e0e0;padding-right:20px">
     <h3 style="font-size:13px;margin-bottom:16px;color:#0066cc;font-weight:700;letter-spacing:0.5px;text-transform:uppercase;border-bottom:2px solid #0066cc;padding-bottom:8px">核心品牌对比</h3>
@@ -127,7 +129,7 @@ h1{text-align:center;font-size:18px;padding:8px 0;color:#1a1a2e;flex-shrink:0}
     <div id="trend-chart" style="width:100%;height:300px"></div>
   </div>
 </div>
-<div class="main-grid-wrap"><div class="grid-table" id="grid"></div></div></div></div>
+<div class="main-grid-wrap"><div class="grid-table" id="grid"></div></div></div></div></div>
 <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
 <script>
 const chartData=[{"date": "2026-02-03", "sales": 1009625, "dod": 0}, {"date": "2026-02-04", "sales": 898736, "dod": -10.983186826792124}, {"date": "2026-02-05", "sales": 868027, "dod": -3.416909971337523}, {"date": "2026-02-06", "sales": 782914, "dod": -9.80534015646979}, {"date": "2026-02-07", "sales": 578825, "dod": -26.067869523344832}, {"date": "2026-02-08", "sales": 470276, "dod": -18.75333650066946}, {"date": "2026-02-09", "sales": 394818, "dod": -16.045471170121374}, {"date": "2026-02-10", "sales": 323847, "dod": -17.97562421166208}, {"date": "2026-02-11", "sales": 250019, "dod": -22.797185090490256}, {"date": "2026-02-12", "sales": 202557, "dod": -18.983357264847868}, {"date": "2026-02-13", "sales": 154737, "dod": -23.608169552274173}, {"date": "2026-02-14", "sales": 124170, "dod": -19.75416351615967}, {"date": "2026-02-15", "sales": 120324, "dod": -3.0973665136506456}, {"date": "2026-02-16", "sales": 76078, "dod": -36.77238123732589}, {"date": "2026-02-17", "sales": 93753, "dod": 23.232734824785094}, {"date": "2026-02-18", "sales": 141159, "dod": 50.56478192697833}, {"date": "2026-02-19", "sales": 185763, "dod": 31.59841030327504}, {"date": "2026-02-20", "sales": 221495, "dod": 19.235262135086106}, {"date": "2026-02-21", "sales": 271975, "dod": 22.79058218018466}, {"date": "2026-02-22", "sales": 350086, "dod": 28.719919110212345}, {"date": "2026-02-23", "sales": 383676, "dod": 9.594785281330864}, {"date": "2026-02-24", "sales": 469977, "dod": 22.49319738529385}, {"date": "2026-02-25", "sales": 551020, "dod": 17.24403534641057}, {"date": "2026-02-26", "sales": 693965, "dod": 25.941889586584878}, {"date": "2026-02-27", "sales": 697966, "dod": 0.5765420446276037}, {"date": "2026-02-28", "sales": 735832, "dod": 5.425192631159681}, {"date": "2026-03-01", "sales": 754019, "dod": 2.4716239576425103}, {"date": "2026-03-02", "sales": 955022, "dod": 26.657551069668006}, {"date": "2026-03-03", "sales": 832000, "dod": -12.88158806812827}, {"date": "2026-03-04", "sales": 1165051, "dod": 40.03016826923076}];
