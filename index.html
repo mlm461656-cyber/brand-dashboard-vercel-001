@@ -87,7 +87,7 @@ function dname(n){
 function pct(num,den){return den?((num/den)*100).toFixed(1)+'%':'0.0%';}
 function pctInt(num,den){return den?Math.round((num/den)*100)+'%':'0%';}
 dates.forEach(d=>{let o=document.createElement('option');o.value=o.text=d;dd.add(o)});
-dd.value=dates[dates.length-1];
+dd.value=dates[0];
 dd.onchange=render;
 
 function calcWeeks(dateStr){
