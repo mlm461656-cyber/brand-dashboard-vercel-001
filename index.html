@@ -45,7 +45,8 @@ h1{text-align:center;font-size:18px;padding:8px 0;color:#1a1a2e;flex-shrink:0}
 <span class="stat">品牌总数<b id="bc">0</b></span>
 <span class="stat">大盘<b id="ts">0</b></span>
 <input id="sb" placeholder="搜索品牌..." oninput="render()">
-<button id="exportMainBtn" style="margin-left:auto;padding:6px 12px;background:#0066cc;color:#fff;border:none;border-radius:4px;cursor:pointer;font-size:12px">导出主明细表</button></div>
+<button id="copyMainBtn" style="margin-left:auto;padding:6px 12px;background:#52c41a;color:#fff;border:none;border-radius:4px;cursor:pointer;font-size:12px;margin-right:8px">复制主明细表</button>
+<button id="exportMainBtn" style="padding:6px 12px;background:#0066cc;color:#fff;border:none;border-radius:4px;cursor:pointer;font-size:12px">导出主明细表</button></div>
 <div class="tbl-wrap">
 <div class="content-container">
 <div class="top-dashboard">
@@ -578,6 +579,93 @@ document.getElementById('exportMainBtn').onclick=function(){
  });
 
  exportToExcel(data,'主明细表_'+date);
+};
+
+// 复制主明细表到剪贴板
+document.getElementById('copyMainBtn').onclick=async function(){
+ const date=dd.value;
+ const kw=sb.value.toLowerCase();
+ const weeks=calcWeeks(date);
+ const months=calcMonths(date);
+
+ const header1=['排名','品牌名称','昨日','近7天日均','近30天日均','昨日市占率','近7日市占率','近30日市占率'];
+ weeks.forEach(w=>header1.push(w.label+' '+w.range));
+ months.forEach(m=>header1.push(m.label+' '+m.range));
+
+ let text=header1.join('\t')+'\n';
+
+ const dpSales=(idx['大盘']&&idx['大盘'][date])||0;
+ const dpSm=S['大盘']||Array(12).fill(0);
+ const dp7=dpSm[0]||0,dp30=dpSm[1]||0;
+
+ if(dpSales){
+  const row=['-','大盘',dpSales,Math.round(dp7),Math.round(dp30),'100%','100%','100%'];
+  weeks.forEach(w=>{
+   const val=calcWeekSales('大盘',w.startKey,w.endKey);
+   row.push((val/10000).toFixed(1));
+  });
+  months.forEach((m,i)=>{
+   let endDate;
+   if(i===0){
+    endDate=date;
+   }else{
+    let parts=m.key.split('-');
+    let y=parseInt(parts[0]),mo=parseInt(parts[1]);
+    let lastDay=new Date(y,mo,0).getDate();
+    endDate=y+'-'+mo.toString().padStart(2,'0')+'-'+lastDay.toString().padStart(2,'0');
+   }
+   const val=calcMonthSales('大盘',m.key,endDate);
+   row.push((val/10000).toFixed(1));
+  });
+  text+=row.join('\t')+'\n';
+ }
+
+ let seen=new Set();
+ let list=D.filter(r=>{
+  if(r[0]!==date||r[1]==='大盘')return false;
+  let dn=dname(r[1]);
+  if(!dn.toLowerCase().includes(kw))return false;
+  if(seen.has(dn))return false;
+  seen.add(dn);return true;
+ });
+ list.sort((a,b)=>b[2]-a[2]);
+
+ list.forEach((r,i)=>{
+  const sm=S[r[1]]||S[dname(r[1])]||Array(12).fill(0);
+  const row=[i+1,dname(r[1]),r[2],sm[0],sm[1],((r[2]/dpSales)*100).toFixed(1)+'%',(sm[0]/dp7*100).toFixed(1)+'%',(sm[1]/dp30*100).toFixed(1)+'%'];
+  weeks.forEach(w=>{
+   const val=calcWeekSales(r[1],w.startKey,w.endKey);
+   row.push((val/10000).toFixed(1));
+  });
+  months.forEach((m,i)=>{
+   let endDate;
+   if(i===0){
+    endDate=date;
+   }else{
+    let parts=m.key.split('-');
+    let y=parseInt(parts[0]),mo=parseInt(parts[1]);
+    let lastDay=new Date(y,mo,0).getDate();
+    endDate=y+'-'+mo.toString().padStart(2,'0')+'-'+lastDay.toString().padStart(2,'0');
+   }
+   const val=calcMonthSales(r[1],m.key,endDate);
+   row.push((val/10000).toFixed(1));
+  });
+  text+=row.join('\t')+'\n';
+ });
+
+ try{
+  await navigator.clipboard.writeText(text);
+  const btn=document.getElementById('copyMainBtn');
+  const originalText=btn.textContent;
+  btn.textContent='已复制!';
+  btn.style.background='#52c41a';
+  setTimeout(()=>{
+   btn.textContent=originalText;
+   btn.style.background='#52c41a';
+  },2000);
+ }catch(err){
+  alert('复制失败，请手动复制');
+ }
 };
 
 </script></body></html>
