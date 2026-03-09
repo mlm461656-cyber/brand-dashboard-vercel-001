@@ -44,16 +44,23 @@ h1{text-align:center;font-size:18px;padding:8px 0;color:#1a1a2e;flex-shrink:0}
 <div class="toolbar"><span>日期</span><select id="dd"></select>
 <span class="stat">品牌总数<b id="bc">0</b></span>
 <span class="stat">大盘<b id="ts">0</b></span>
-<input id="sb" placeholder="搜索品牌..." oninput="render()"></div>
+<input id="sb" placeholder="搜索品牌..." oninput="render()">
+<button id="exportMainBtn" style="margin-left:auto;padding:6px 12px;background:#0066cc;color:#fff;border:none;border-radius:4px;cursor:pointer;font-size:12px">导出主明细表</button></div>
 <div class="tbl-wrap">
 <div class="content-container">
 <div class="top-dashboard">
   <div class="dashboard-left" style="flex:0 0 35%;background:#fff;border-radius:8px;box-shadow:0 1px 3px rgba(0,0,0,0.08);padding:20px">
-    <h3 style="font-size:13px;margin-bottom:16px;color:#0066cc;font-weight:700;letter-spacing:0.5px;text-transform:uppercase;border-bottom:2px solid #0066cc;padding-bottom:8px">核心品牌对比</h3>
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+      <h3 style="font-size:13px;margin:0;color:#0066cc;font-weight:700;letter-spacing:0.5px;text-transform:uppercase;border-bottom:2px solid #0066cc;padding-bottom:8px;flex:1">核心品牌对比</h3>
+      <button id="exportBrandBtn" style="padding:4px 10px;background:#0066cc;color:#fff;border:none;border-radius:4px;cursor:pointer;font-size:11px;margin-left:10px">导出</button>
+    </div>
     <div id="brand-comparison-table"></div>
   </div>
   <div class="dashboard-right" style="flex:1;background:#fff;border-radius:8px;box-shadow:0 1px 3px rgba(0,0,0,0.08);padding:20px">
-    <h3 style="font-size:13px;margin-bottom:16px;color:#0066cc;font-weight:700;letter-spacing:0.5px;text-transform:uppercase;border-bottom:2px solid #0066cc;padding-bottom:8px">30天趋势</h3>
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+      <h3 style="font-size:13px;margin:0;color:#0066cc;font-weight:700;letter-spacing:0.5px;text-transform:uppercase;border-bottom:2px solid #0066cc;padding-bottom:8px;flex:1">30天趋势</h3>
+      <button id="exportTrendBtn" style="padding:4px 10px;background:#0066cc;color:#fff;border:none;border-radius:4px;cursor:pointer;font-size:11px;margin-left:10px">导出</button>
+    </div>
     <div id="trend-chart" style="width:100%;height:300px"></div>
   </div>
 </div>
@@ -401,4 +408,176 @@ function render(){
  renderBrandComparison(date);
 }
 render();
+
+// Excel导出功能
+function exportToExcel(data,filename){
+ let csv='';
+ data.forEach((row,i)=>{
+  csv+=row.map(cell=>{
+   if(typeof cell==='string'&&(cell.includes(',')||cell.includes('"')||cell.includes('\n'))){
+    return '"'+cell.replace(/"/g,'""')+'"';
+   }
+   return cell;
+  }).join(',')+('\n');
+ });
+ const bom='\uFEFF';
+ const blob=new Blob([bom+csv],{type:'text/csv;charset=utf-8'});
+ const url=URL.createObjectURL(blob);
+ const a=document.createElement('a');
+ a.href=url;
+ a.download=filename+'.csv';
+ a.click();
+ URL.revokeObjectURL(url);
+}
+
+// 导出核心品牌对比
+document.getElementById('exportBrandBtn').onclick=function(){
+ const date=dd.value;
+ const data=[['排序','品牌','销量','市占率','日环比','VS网校']];
+ const dapanSales=(idx['大盘']&&idx['大盘'][date])||0;
+ const wangxiaoSales=(idx['学而思网校']&&idx['学而思网校'][date])||0;
+
+ function calcBrandDod(brand,dateKey){
+  const curr=(idx[brand]&&idx[brand][dateKey])||0;
+  const d=new Date(dateKey);
+  const prevD=new Date(d.getTime()-86400000);
+  const prevKey=prevD.getFullYear()+'-'+(prevD.getMonth()+1).toString().padStart(2,'0')+'-'+prevD.getDate().toString().padStart(2,'0');
+  const prev=(idx[brand]&&idx[brand][prevKey])||0;
+  return prev>0?((curr/prev-1)*100):0;
+ }
+
+ function getAllBrandsSorted(dateKey){
+  const brandsSales=[];
+  for(let brand in idx){
+   if(brand==='大盘')continue;
+   const sales=(idx[brand]&&idx[brand][dateKey])||0;
+   if(sales>0)brandsSales.push({brand,sales});
+  }
+  brandsSales.sort((a,b)=>b.sales-a.sales);
+  return brandsSales;
+ }
+
+ const allBrands=getAllBrandsSorted(date);
+ const top3=allBrands.slice(0,3);
+ const top3Brands=top3.map(x=>x.brand);
+ const top3Total=top3.reduce((sum,x)=>sum+x.sales,0);
+
+ const dapanDod=calcBrandDod('大盘',date);
+ data.push(['-','大盘',dapanSales,'100.0%',dapanDod.toFixed(1)+'%',wangxiaoSales>0?(dapanSales/wangxiaoSales).toFixed(2):'-']);
+
+ const d=new Date(date);
+ const prevD=new Date(d.getTime()-86400000);
+ const prevDate=prevD.getFullYear()+'-'+(prevD.getMonth()+1).toString().padStart(2,'0')+'-'+prevD.getDate().toString().padStart(2,'0');
+ const top3Prev=top3Brands.reduce((sum,b)=>sum+((idx[b]&&idx[b][prevDate])||0),0);
+ const top3Dod=top3Prev>0?((top3Total/top3Prev-1)*100):0;
+ data.push(['-','Top3合计',top3Total,dapanSales>0?((top3Total/dapanSales)*100).toFixed(1)+'%':'0.0%',top3Dod.toFixed(1)+'%',wangxiaoSales>0?(top3Total/wangxiaoSales).toFixed(2):'-']);
+
+ top3.forEach((item,i)=>{
+  const dod=calcBrandDod(item.brand,date);
+  data.push([i+1,item.brand,item.sales,dapanSales>0?((item.sales/dapanSales)*100).toFixed(1)+'%':'0.0%',dod.toFixed(1)+'%',wangxiaoSales>0?(item.sales/wangxiaoSales).toFixed(2):'-']);
+ });
+
+ const fixedBrands=['学而思网校','学而思图书_集团','作业帮（剔除书课包）'];
+ const fixedBrandsData=[];
+ fixedBrands.forEach(brand=>{
+  if(top3Brands.includes(brand))return;
+  const sales=(idx[brand]&&idx[brand][date])||0;
+  const rank=allBrands.findIndex(x=>x.brand===brand)+1;
+  fixedBrandsData.push({brand,sales,rank:rank>0?rank:'-'});
+ });
+ fixedBrandsData.sort((a,b)=>b.sales-a.sales);
+
+ fixedBrandsData.forEach(item=>{
+  const dod=calcBrandDod(item.brand,date);
+  const marketShare=dapanSales>0?((item.sales/dapanSales)*100).toFixed(1)+'%':'0.0%';
+  const vsWangxiao=item.brand==='学而思网校'?'1.00':(wangxiaoSales>0?(item.sales/wangxiaoSales).toFixed(2):'-');
+  data.push([item.rank,item.brand,item.sales===0?'-':item.sales,item.sales===0?'-':marketShare,item.sales===0?'-':dod.toFixed(1)+'%',item.sales===0?'-':vsWangxiao]);
+ });
+
+ exportToExcel(data,'核心品牌对比_'+date);
+};
+
+// 导出30天趋势
+document.getElementById('exportTrendBtn').onclick=function(){
+ const data=[['日期','大盘销量','日环比(%)']];
+ chartData.forEach(row=>{
+  data.push([row.date,row.sales,row.dod.toFixed(1)]);
+ });
+ exportToExcel(data,'30天趋势_'+dd.value);
+};
+
+// 导出主明细表
+document.getElementById('exportMainBtn').onclick=function(){
+ const date=dd.value;
+ const kw=sb.value.toLowerCase();
+ const weeks=calcWeeks(date);
+ const months=calcMonths(date);
+
+ const header1=['排名','品牌名称','昨日','近7天日均','近30天日均','昨日市占率','近7日市占率','近30日市占率'];
+ weeks.forEach(w=>header1.push(w.label+' '+w.range));
+ months.forEach(m=>header1.push(m.label+' '+m.range));
+ const data=[header1];
+
+ const dpSales=(idx['大盘']&&idx['大盘'][date])||0;
+ const dpSm=S['大盘']||Array(12).fill(0);
+ const dp7=dpSm[0]||0,dp30=dpSm[1]||0;
+
+ if(dpSales){
+  const row=['-','大盘',dpSales,Math.round(dp7),Math.round(dp30),'100%','100%','100%'];
+  weeks.forEach(w=>{
+   const val=calcWeekSales('大盘',w.startKey,w.endKey);
+   row.push((val/10000).toFixed(1));
+  });
+  months.forEach((m,i)=>{
+   let endDate;
+   if(i===0){
+    endDate=date;
+   }else{
+    let parts=m.key.split('-');
+    let y=parseInt(parts[0]),mo=parseInt(parts[1]);
+    let lastDay=new Date(y,mo,0).getDate();
+    endDate=y+'-'+mo.toString().padStart(2,'0')+'-'+lastDay.toString().padStart(2,'0');
+   }
+   const val=calcMonthSales('大盘',m.key,endDate);
+   row.push((val/10000).toFixed(1));
+  });
+  data.push(row);
+ }
+
+ let seen=new Set();
+ let list=D.filter(r=>{
+  if(r[0]!==date||r[1]==='大盘')return false;
+  let dn=dname(r[1]);
+  if(!dn.toLowerCase().includes(kw))return false;
+  if(seen.has(dn))return false;
+  seen.add(dn);return true;
+ });
+ list.sort((a,b)=>b[2]-a[2]);
+
+ list.forEach((r,i)=>{
+  const sm=S[r[1]]||S[dname(r[1])]||Array(12).fill(0);
+  const row=[i+1,dname(r[1]),r[2],sm[0],sm[1],((r[2]/dpSales)*100).toFixed(1)+'%',(sm[0]/dp7*100).toFixed(1)+'%',(sm[1]/dp30*100).toFixed(1)+'%'];
+  weeks.forEach(w=>{
+   const val=calcWeekSales(r[1],w.startKey,w.endKey);
+   row.push((val/10000).toFixed(1));
+  });
+  months.forEach((m,i)=>{
+   let endDate;
+   if(i===0){
+    endDate=date;
+   }else{
+    let parts=m.key.split('-');
+    let y=parseInt(parts[0]),mo=parseInt(parts[1]);
+    let lastDay=new Date(y,mo,0).getDate();
+    endDate=y+'-'+mo.toString().padStart(2,'0')+'-'+lastDay.toString().padStart(2,'0');
+   }
+   const val=calcMonthSales(r[1],m.key,endDate);
+   row.push((val/10000).toFixed(1));
+  });
+  data.push(row);
+ });
+
+ exportToExcel(data,'主明细表_'+date);
+};
+
 </script></body></html>
