@@ -5,10 +5,10 @@
 body{font:12px/1.5 -apple-system,sans-serif;background:#f0f2f5;color:#333;overflow:hidden;height:100vh;display:flex;flex-direction:column}
 .wrap{width:100%;max-width:100%;margin:0 auto;padding:8px 16px;display:flex;flex-direction:column;height:100vh}
 h1{text-align:center;font-size:18px;padding:8px 0;color:#1a1a2e;flex-shrink:0}
-.toolbar{display:flex;align-items:center;gap:10px;padding:6px 10px;background:#fff;border-radius:8px;margin-bottom:8px;flex-wrap:wrap;flex-shrink:0;position:sticky;top:0;z-index:100}
-.toolbar select,.toolbar input{padding:4px 8px;border:1px solid #d9d9d9;border-radius:4px;font-size:12px}
+.toolbar{display:flex;align-items:center;gap:100px;padding:12px 10px;background:#fff;border-radius:8px;margin-bottom:8px;flex-wrap:wrap;flex-shrink:0;position:sticky;top:0;z-index:100}
+.toolbar select,.toolbar input{padding:6px 10px;border:1px solid #d9d9d9;border-radius:4px;font-size:14px}
 .toolbar input{width:150px}
-.stat{font-size:12px;color:#666}.stat b{color:#1a1a2e;font-size:12px;margin-left:4px}
+.stat{font-size:14px;color:#666}.stat b{color:#1a1a2e;font-size:14px;margin-left:4px}
 .tbl-wrap{background:#f0f2f5;overflow-y:auto;overflow-x:auto;flex:1;padding:0}
 .content-container{width:1400px;margin:0 auto}
 .top-dashboard{display:flex;gap:16px;margin-bottom:16px;flex-shrink:0;width:100%}
@@ -48,7 +48,7 @@ h1{text-align:center;font-size:18px;padding:8px 0;color:#1a1a2e;flex-shrink:0}
 <div class="tbl-wrap">
 <div class="content-container">
 <div class="top-dashboard">
-  <div class="dashboard-left" style="flex:0 0 30%;background:#fff;border-radius:8px;box-shadow:0 1px 3px rgba(0,0,0,0.08);padding:20px">
+  <div class="dashboard-left" style="flex:0 0 35%;background:#fff;border-radius:8px;box-shadow:0 1px 3px rgba(0,0,0,0.08);padding:20px">
     <h3 style="font-size:13px;margin-bottom:16px;color:#0066cc;font-weight:700;letter-spacing:0.5px;text-transform:uppercase;border-bottom:2px solid #0066cc;padding-bottom:8px">核心品牌对比</h3>
     <div id="brand-comparison-table"></div>
   </div>
@@ -193,7 +193,7 @@ function renderBrandComparison(date){
   return prev>0?((curr/prev-1)*100):0;
  }
 
- function getTop3Brands(dateKey){
+ function getAllBrandsSorted(dateKey){
   const brandsSales=[];
   for(let brand in idx){
    if(brand==='大盘')continue;
@@ -201,10 +201,11 @@ function renderBrandComparison(date){
    if(sales>0)brandsSales.push({brand,sales});
   }
   brandsSales.sort((a,b)=>b.sales-a.sales);
-  return brandsSales.slice(0,3);
+  return brandsSales;
  }
 
- const top3=getTop3Brands(date);
+ const allBrands=getAllBrandsSorted(date);
+ const top3=allBrands.slice(0,3);
  const top3Brands=top3.map(x=>x.brand);
  const top3Total=top3.reduce((sum,x)=>sum+x.sales,0);
 
@@ -251,45 +252,29 @@ function renderBrandComparison(date){
  });
 
  const fixedBrands=['学而思网校','学而思图书_集团','作业帮（剔除书课包）'];
+ const fixedBrandsData=[];
  fixedBrands.forEach(brand=>{
   if(top3Brands.includes(brand))return;
-
   const sales=(idx[brand]&&idx[brand][date])||0;
+  const rank=allBrands.findIndex(x=>x.brand===brand)+1;
+  fixedBrandsData.push({brand,sales,rank:rank>0?rank:'-'});
+ });
+ fixedBrandsData.sort((a,b)=>b.sales-a.sales);
 
-  if(sales===0){
-   tableRows.push({
-    rank:'-',
-    brand:brand,
-    sales:0,
-    marketShare:'-',
-    dod:'-',
-    vsWangxiao:'-',
-    style:''
-   });
-  }else{
-   const dod=calcBrandDod(brand,date);
-   const marketShare=dapanSales>0?((sales/dapanSales)*100).toFixed(1)+'%':'0.0%';
-   const vsWangxiao=brand==='学而思网校'?'1.00':(wangxiaoSales>0?(sales/wangxiaoSales).toFixed(2):'-');
+ fixedBrandsData.forEach(item=>{
+  const dod=calcBrandDod(item.brand,date);
+  const marketShare=dapanSales>0?((item.sales/dapanSales)*100).toFixed(1)+'%':'0.0%';
+  const vsWangxiao=item.brand==='学而思网校'?'1.00':(wangxiaoSales>0?(item.sales/wangxiaoSales).toFixed(2):'-');
 
-   const allBrands=[];
-   for(let b in idx){
-    if(b==='大盘')continue;
-    const s=(idx[b]&&idx[b][date])||0;
-    if(s>0)allBrands.push({brand:b,sales:s});
-   }
-   allBrands.sort((a,b)=>b.sales-a.sales);
-   const rank=allBrands.findIndex(x=>x.brand===brand)+1;
-
-   tableRows.push({
-    rank:rank>0?rank:'-',
-    brand:brand,
-    sales:sales,
-    marketShare:marketShare,
-    dod:dod.toFixed(1)+'%',
-    vsWangxiao:vsWangxiao,
-    style:''
-   });
-  }
+  tableRows.push({
+   rank:item.rank,
+   brand:item.brand,
+   sales:item.sales,
+   marketShare:item.sales===0?'-':marketShare,
+   dod:item.sales===0?'-':dod.toFixed(1)+'%',
+   vsWangxiao:item.sales===0?'-':vsWangxiao,
+   style:''
+  });
  });
 
  let html='<table style="width:100%;border-collapse:collapse;font-size:11px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif">';
