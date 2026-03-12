@@ -143,10 +143,10 @@ function buildHeader(weeks,months){
  h+='<div class="grid-cell header c4 header-group-5" style="grid-row:1;grid-column:14/19">月累计（单位：万单）</div>';
  h+='<div class="grid-cell header c1" style="grid-row:2;grid-column:3">昨日</div>';
  h+='<div class="grid-cell header c1" style="grid-row:2;grid-column:4">近7天日均</div>';
- h+='<div class="grid-cell header c1" style="grid-row:2;grid-column:5">近6个月日均</div>';
+ h+='<div class="grid-cell header c1" style="grid-row:2;grid-column:5">近30天日均</div>';
  h+='<div class="grid-cell header c2" style="grid-row:2;grid-column:6">昨日</div>';
  h+='<div class="grid-cell header c2" style="grid-row:2;grid-column:7">近7日</div>';
- h+='<div class="grid-cell header c2" style="grid-row:2;grid-column:8">近6个月</div>';
+ h+='<div class="grid-cell header c2" style="grid-row:2;grid-column:8">近30日</div>';
  let col=9;
  weeks.forEach(w=>{
   h+='<div class="grid-cell header wk c3" style="grid-row:2;grid-column:'+col+'">'+w.label+'<br>'+w.range+'</div>';
@@ -514,7 +514,7 @@ document.getElementById('exportMainBtn').onclick=function(){
  const weeks=calcWeeks(date);
  const months=calcMonths(date);
 
- const header1=['排名','品牌名称','昨日','近7天日均','近6个月日均','昨日市占率','近7日市占率','近6个月市占率'];
+ const header1=['排名','品牌名称','昨日','近7天日均','近30天日均','昨日市占率','近7日市占率','近30日市占率'];
  weeks.forEach(w=>header1.push(w.label+' '+w.range));
  months.forEach(m=>header1.push(m.label+' '+m.range));
  const data=[header1];
@@ -588,7 +588,7 @@ document.getElementById('copyMainBtn').onclick=async function(){
  const weeks=calcWeeks(date);
  const months=calcMonths(date);
 
- const header1=['排名','品牌名称','昨日','近7天日均','近6个月日均','昨日市占率','近7日市占率','近6个月市占率'];
+ const header1=['排名','品牌名称','昨日','近7天日均','近30天日均','昨日市占率','近7日市占率','近30日市占率'];
  weeks.forEach(w=>header1.push(w.label+' '+w.range));
  months.forEach(m=>header1.push(m.label+' '+m.range));
 
