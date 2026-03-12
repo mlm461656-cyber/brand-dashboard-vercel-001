@@ -403,15 +403,15 @@ function renderCompetitionTable(date){
  html+='</tr></thead><tbody>';
 
  html+='<tr style="border-bottom:1px solid #e0e0e0;background:#fff3cd">';
- html+='<td colspan="2" style="padding:6px 4px;text-align:left;color:#1a1a1a;font-weight:700">大盘</td>';
- html+='<td style="padding:6px 4px;text-align:right;color:#333;font-variant-numeric:tabular-nums">'+(dapanSales/10000).toFixed(1)+'</td>';
+ html+='<td colspan="2" style="padding:6px 4px;text-align:center;color:#1a1a1a;font-weight:700">大盘</td>';
+ html+='<td style="padding:6px 4px;text-align:right;color:#333;font-variant-numeric:tabular-nums">'+Math.round(dapanSales/10000)+'</td>';
  html+='<td style="padding:6px 4px;text-align:right;color:#333;font-variant-numeric:tabular-nums">100.0%</td>';
  html+='<td style="padding:6px 4px;text-align:right;color:#333;font-variant-numeric:tabular-nums">'+dapanYoy.toFixed(1)+'%</td>';
  html+='</tr>';
 
  html+='<tr style="border-bottom:1px solid #e0e0e0;background:#d1ecf1">';
- html+='<td colspan="2" style="padding:6px 4px;text-align:left;color:#1a1a1a;font-weight:700">top10合计</td>';
- html+='<td style="padding:6px 4px;text-align:right;color:#333;font-variant-numeric:tabular-nums">'+(top10Total/10000).toFixed(1)+'</td>';
+ html+='<td colspan="2" style="padding:6px 4px;text-align:center;color:#1a1a1a;font-weight:700">top10合计</td>';
+ html+='<td style="padding:6px 4px;text-align:right;color:#333;font-variant-numeric:tabular-nums">'+Math.round(top10Total/10000)+'</td>';
  html+='<td style="padding:6px 4px;text-align:right;color:#333;font-variant-numeric:tabular-nums">'+(dapanSales>0?((top10Total/dapanSales)*100).toFixed(1):'0.0')+'%</td>';
  html+='<td style="padding:6px 4px;text-align:right;color:#333;font-variant-numeric:tabular-nums">'+top10Yoy.toFixed(1)+'%</td>';
  html+='</tr>';
@@ -475,7 +475,7 @@ function render(){
  if(dpSales){
   h+='<div class="grid-cell dap" style="grid-row:'+row+';grid-column:1">-</div>';
   h+='<div class="grid-cell dap col2" style="grid-row:'+row+';grid-column:2">大盘</div>';
-  h+='<div class="grid-cell dap" style="grid-row:'+row+';grid-column:3">'+fmt(dpSales)+'</div>';
+  h+='<div class="grid-cell dap" style="grid-row:'+row+';grid-column:3">'+fmt(Math.round(dpSales))+'</div>';
   h+='<div class="grid-cell dap" style="grid-row:'+row+';grid-column:4">'+fmt(Math.round(dp7))+'</div>';
   h+='<div class="grid-cell dap" style="grid-row:'+row+';grid-column:5">'+fmt(Math.round(dp30))+'</div>';
   h+='<div class="grid-cell dap" style="grid-row:'+row+';grid-column:6">'+pctInt(dpSales,dpSales)+'</div>';
@@ -484,7 +484,7 @@ function render(){
   let col=9;
   weeks.forEach((w,i)=>{
    let val=calcWeekSales('大盘',w.startKey,w.endKey);
-   h+='<div class="grid-cell dap wk" style="grid-row:'+row+';grid-column:'+col+'">'+(val/10000).toFixed(1)+'</div>';
+   h+='<div class="grid-cell dap wk" style="grid-row:'+row+';grid-column:'+col+'">'+Math.round(val/10000)+'</div>';
    col++;
   });
   months.forEach((m,i)=>{
@@ -498,7 +498,7 @@ function render(){
     endDate=y+'-'+mo.toString().padStart(2,'0')+'-'+lastDay.toString().padStart(2,'0');
    }
    let val=calcMonthSales('大盘',m.key,endDate);
-   h+='<div class="grid-cell dap mo" style="grid-row:'+row+';grid-column:'+col+'">'+(val/10000).toFixed(1)+'</div>';
+   h+='<div class="grid-cell dap mo" style="grid-row:'+row+';grid-column:'+col+'">'+Math.round(val/10000)+'</div>';
    col++;
   });
   row++;
