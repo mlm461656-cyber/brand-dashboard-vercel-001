@@ -823,7 +823,7 @@ const fmt=n=>n.toLocaleString();
          const date=dd.value;
          const kw=sb.value.toLowerCase();
          const tableData=buildMainTableData(date,kw);
-         exportToExcel([tableData.headers,...tableData.rows],'??_'+date);
+         exportToExcel([tableData.headers,...tableData.rows],'????_'+date);
         };
 
         // ?7?
@@ -839,14 +839,14 @@ const fmt=n=>n.toLocaleString();
           await navigator.clipboard.writeText(text);
           const btn=document.getElementById('copyMainBtn');
           const originalText=btn.textContent;
-          btn.textContent='?';
+          btn.textContent='???';
           btn.style.background='#52c41a';
           setTimeout(()=>{
            btn.textContent=originalText;
            btn.style.background='#52c41a';
           },2000);
          }catch(err){
-          alert('?7?');
+          alert('??????????');
          }
         };
         
