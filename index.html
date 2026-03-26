@@ -750,7 +750,7 @@ const fmt=n=>n.toLocaleString();
         function getFilteredMainRows(date,kw){
          let seen=new Set();
          let list=D.filter(r=>{
-          if(r[0]!==date||r[1]==='??')return false;
+          if(r[0]!==date||r[1]==='?')return false;
           let dn=dname(r[1]);
           if(!dn.toLowerCase().includes(kw))return false;
           if(seen.has(dn))return false;
@@ -763,24 +763,24 @@ const fmt=n=>n.toLocaleString();
         function buildMainTableData(date,kw){
          const weeks=calcWeeks(date);
          const months=calcMonths(date);
-         const headers=['??','????','??','?7???','?30???','?????','?7????','?30????'];
+         const headers=['?','??','?','?7?','?30?','?7?','?7??','?30??'];
          weeks.forEach(w=>headers.push(w.label+' '+w.range));
          months.forEach(m=>headers.push(m.label+' '+m.range));
 
          const rows=[];
-         const dpSales=(idx['??']&&idx['??'][date])||0;
-         const dpSm=S['??']||Array(12).fill(0);
+         const dpSales=(idx['?']&&idx['?'][date])||0;
+         const dpSm=S['?']||Array(12).fill(0);
          const dp7=dpSm[0]||0,dp30=dpSm[1]||0;
 
          if(dpSales){
-          const marketRow=['-','??',dpSales,Math.round(dp7),Math.round(dp30),'100%','100%','100%'];
+          const marketRow=['-','?',dpSales,Math.round(dp7),Math.round(dp30),'100%','100%','100%'];
           weeks.forEach(w=>{
-           const val=calcWeekSales('??',w.startKey,w.endKey);
+           const val=calcWeekSales('?',w.startKey,w.endKey);
            marketRow.push((val/10000).toFixed(1));
           });
           months.forEach((m,i)=>{
            const endDate=getMonthEndDate(m.key,i,date);
-           const val=calcMonthSales('??',m.key,endDate);
+           const val=calcMonthSales('?',m.key,endDate);
            marketRow.push((val/10000).toFixed(1));
           });
           rows.push(marketRow);
@@ -818,10 +818,10 @@ const fmt=n=>n.toLocaleString();
          const date=dd.value;
          const kw=sb.value.toLowerCase();
          const tableData=buildMainTableData(date,kw);
-         exportToExcel([tableData.headers,...tableData.rows],'????_'+date);
+         exportToExcel([tableData.headers,...tableData.rows],'??_'+date);
         };
 
-        // ???????
+        // ?7?
         document.getElementById('copyMainBtn').onclick=async function(){
          const date=dd.value;
          const kw=sb.value.toLowerCase();
@@ -834,14 +834,14 @@ const fmt=n=>n.toLocaleString();
           await navigator.clipboard.writeText(text);
           const btn=document.getElementById('copyMainBtn');
           const originalText=btn.textContent;
-          btn.textContent='???';
+          btn.textContent='?';
           btn.style.background='#52c41a';
           setTimeout(()=>{
            btn.textContent=originalText;
            btn.style.background='#52c41a';
           },2000);
          }catch(err){
-          alert('???????');
+          alert('?7?');
          }
         };
         
