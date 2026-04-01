@@ -831,9 +831,7 @@ const fmt=n=>n.toLocaleString();
          const date=dd.value;
          const kw=sb.value.toLowerCase();
          const tableData=buildMainTableData(date,kw);
-         const text=[tableData.headers,...tableData.rows].map(row=>row.join('	')).join('
-')+'
-';
+         const text=[tableData.headers,...tableData.rows].map(row=>row.join('\t')).join('\n')+'\n';
 
          try{
           await navigator.clipboard.writeText(text);
